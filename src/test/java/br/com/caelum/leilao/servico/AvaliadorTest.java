@@ -3,10 +3,16 @@ package br.com.caelum.leilao.servico;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
+import br.com.caelum.leilao.infra.dao.LeilaoDao;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +20,11 @@ import br.com.caelum.leilao.builder.CriadorDeLeilao;
 import br.com.caelum.leilao.dominio.Lance;
 import br.com.caelum.leilao.dominio.Leilao;
 import br.com.caelum.leilao.dominio.Usuario;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AvaliadorTest {
 	
 	private Avaliador leiloeiro;
@@ -22,11 +32,18 @@ public class AvaliadorTest {
 	private Usuario jose;
 	private Usuario joao;
 
-	@Before
+	@Mock
+    private LeilaoDao leilaoDao;
+
+    public Avaliador getLeiloeiro() {
+        return leiloeiro;
+    }
+
+    @Before
 	public void criaAvaliador() {
 		this.leiloeiro = new Avaliador();
-		this.joao = new Usuario("João");
-		this.jose = new Usuario("José");
+		this.joao = new Usuario("Jo√£o");
+		this.jose = new Usuario("Jos√©");
 		this.maria = new Usuario("Maria");
 	}
 	
@@ -58,7 +75,7 @@ public class AvaliadorTest {
  
     @Test
     public void deveEntenderLeilaoComApenasUmLance() {
-    	Usuario joao = new Usuario("João");
+    	Usuario joao = new Usuario("Jo√£o");
         Leilao leilao = new Leilao("Playstation 3 Novo");
          
         leilao.propoe(new Lance(joao, 1000.0));
@@ -91,5 +108,25 @@ public class AvaliadorTest {
         ));
         
     }
+
+    @Test
+    public void deveEncerrarLeiloesQueComecaramUmaSemanaAtras() {
+        Calendar antiga = Calendar.getInstance();
+        antiga.set(1999, 1, 20);
+
+        Leilao leilao1 = new CriadorDeLeilao().para("TV de plasma")
+                .naData(antiga).constroi();
+        Leilao leilao2 = new CriadorDeLeilao().para("Geladeira")
+                .naData(antiga).constroi();
+
+        when(leilaoDao.correntes()).thenReturn(Arrays.asList(leilao1, leilao2));
+        EncerradorDeLeilao encerrador = new EncerradorDeLeilao(leilaoDao);
+        encerrador.encerra();
+        assertThat(encerrador.getTotalEncerrados(), is(2));
+        assertTrue(leilao1.isEncerrado());
+        assertTrue(leilao2.isEncerrado());
+    }
+
+
      
 }
