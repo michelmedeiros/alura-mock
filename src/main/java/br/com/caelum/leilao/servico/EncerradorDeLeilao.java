@@ -1,19 +1,21 @@
 package br.com.caelum.leilao.servico;
 
+import br.com.caelum.leilao.dominio.Leilao;
+import br.com.caelum.leilao.infra.dao.RepositorioDeLeiloes;
+
 import java.util.Calendar;
 import java.util.List;
 
-import br.com.caelum.leilao.dominio.Leilao;
-import br.com.caelum.leilao.infra.dao.LeilaoDao;
-
 public class EncerradorDeLeilao {
 
-	private LeilaoDao dao;
+	private final RepositorioDeLeiloes dao;
+	private final EnviadorDeEmail carteiro;
 
 	private int total = 0;
 
-	public EncerradorDeLeilao(LeilaoDao leilaoDao) {
+	public EncerradorDeLeilao(RepositorioDeLeiloes leilaoDao, EnviadorDeEmail carteiro) {
 		this.dao = leilaoDao;
+		this.carteiro = carteiro;
 	}
 
 
@@ -25,6 +27,7 @@ public class EncerradorDeLeilao {
 				leilao.encerra();
 				total++;
 				dao.atualiza(leilao);
+				carteiro.envia(leilao);
 			}
 		}
 	}

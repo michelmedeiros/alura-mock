@@ -35,6 +35,9 @@ public class AvaliadorTest {
 	@Mock
     private LeilaoDao leilaoDao;
 
+    @Mock
+    private EnviadorDeEmail carteiro;
+
     public Avaliador getLeiloeiro() {
         return leiloeiro;
     }
@@ -120,7 +123,7 @@ public class AvaliadorTest {
                 .naData(antiga).constroi();
 
         when(leilaoDao.correntes()).thenReturn(Arrays.asList(leilao1, leilao2));
-        EncerradorDeLeilao encerrador = new EncerradorDeLeilao(leilaoDao);
+        EncerradorDeLeilao encerrador = new EncerradorDeLeilao(leilaoDao, carteiro);
         encerrador.encerra();
         assertThat(encerrador.getTotalEncerrados(), is(2));
         assertTrue(leilao1.isEncerrado());
