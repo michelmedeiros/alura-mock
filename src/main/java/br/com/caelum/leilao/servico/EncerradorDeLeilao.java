@@ -2,10 +2,13 @@ package br.com.caelum.leilao.servico;
 
 import br.com.caelum.leilao.dominio.Leilao;
 import br.com.caelum.leilao.infra.dao.RepositorioDeLeiloes;
+import br.com.caelum.leilao.infra.email.EnviadorDeEmail;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Calendar;
 import java.util.List;
 
+@Slf4j
 public class EncerradorDeLeilao {
 
 	private final RepositorioDeLeiloes dao;
@@ -19,16 +22,22 @@ public class EncerradorDeLeilao {
 	}
 
 
-	public void encerra() {
+	public void encerra() throws Exception {
 		List<Leilao> todosLeiloesCorrentes = dao.correntes();
 
 		for (Leilao leilao : todosLeiloesCorrentes) {
-			if (comecouSemanaPassada(leilao)) {
-				leilao.encerra();
-				total++;
-				dao.atualiza(leilao);
-				carteiro.envia(leilao);
+			try {
+				if (comecouSemanaPassada(leilao)) {
+					leilao.encerra();
+					total++;
+					dao.atualiza(leilao);
+					carteiro.envia(leilao);
+				}
+			} catch (Exception ex) {
+				log.error("Erro ao encerrar leilão: {}" + ex.getMessage());
+				throw new Exception("Erro ao encerrar leilão");
 			}
+
 		}
 	}
 

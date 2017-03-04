@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import br.com.caelum.leilao.infra.dao.LeilaoDao;
+import br.com.caelum.leilao.infra.email.EnviadorDeEmail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -113,7 +114,7 @@ public class AvaliadorTest {
     }
 
     @Test
-    public void deveEncerrarLeiloesQueComecaramUmaSemanaAtras() {
+    public void deveEncerrarLeiloesQueComecaramUmaSemanaAtras() throws Exception {
         Calendar antiga = Calendar.getInstance();
         antiga.set(1999, 1, 20);
 
