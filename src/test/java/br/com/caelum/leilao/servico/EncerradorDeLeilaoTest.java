@@ -26,7 +26,6 @@ import static org.mockito.Mockito.*;
 /**
  * Created by Michel Medeiros on 02/03/2017.
  */
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(SpringRunner.class)
 public class EncerradorDeLeilaoTest {
 

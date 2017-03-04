@@ -1,10 +1,13 @@
 package br.com.caelum.leilao.dominio;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+@Data
 public class Leilao {
 
 	private String descricao;
@@ -45,10 +48,6 @@ public class Leilao {
 		return lances.get(lances.size()-1);
 	}
 
-	public String getDescricao() {
-		return descricao;
-	}
-
 	public List<Lance> getLances() {
 		return Collections.unmodifiableList(lances);
 	}
@@ -65,11 +64,4 @@ public class Leilao {
 		return encerrado;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public int getId() {
-		return id;
-	}
 }

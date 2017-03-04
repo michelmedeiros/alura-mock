@@ -1,20 +1,16 @@
 package br.com.caelum.leilao.dominio;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Calendar;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Pagamento {
-
 	private double valor;
 	private Calendar data;
 
-	public Pagamento(double valor, Calendar data) {
-		this.valor = valor;
-		this.data = data;
-	}
-	public double getValor() {
-		return valor;
-	}
-	public Calendar getData() {
-		return data;
-	}
 }
